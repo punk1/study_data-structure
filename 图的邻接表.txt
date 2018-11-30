@@ -1,0 +1,114 @@
+# include <cstdio>
+#include <queue>
+using namespace std;
+#define FFINITY 5000   //代表无穷大
+# define M 20
+bool visit[M];
+queue <int >q;
+typedef char  datatype;//顶点信息数据
+typedef struct node {//边表结点
+	int adjvex;//邻接点
+	struct node *next;
+}edgenode;
+typedef struct vnode {
+	datatype vertex;//顶点信息
+	edgenode *firstedge;//邻接链表头指针
+}vertexnode;
+typedef struct {//邻接表类型
+	vertexnode adjlist[M];//存放头节点的顺序表
+	int n, e;//图的定点数与边数
+}linkgraph;
+void creat(linkgraph *g, int c)
+{
+	int i, j, k;
+	edgenode *s;
+	scanf("%d%d", &g->n,&g->e);
+	for (i = 0; i < g->n; i++)
+	{
+		scanf("%1s", &g->adjlist[i].vertex);//读入顶点信息
+		g->adjlist[i].firstedge = NULL;// 边表置为空表
+	}
+	for (k = 0; k < g->e; k++) {
+		scanf("%d%d", &i, &j);
+		s = (edgenode *)malloc(sizeof(edgenode));
+		s->adjvex = j;
+		s->next = g->adjlist[i].firstedge;
+		g->adjlist[i].firstedge = s;//将新节点s插入顶点的头部（使用头插法O(1)，而不是尾插法O(n)）
+		if (c == 0)
+		{
+			s = (edgenode *)malloc(sizeof(edgenode));
+			s->adjvex = i;
+			s->next = g->adjlist[j].firstedge;
+			g->adjlist[j].firstedge = s;//将新节点 s插入顶点 Vj 的头部
+
+		}
+	}
+}
+void dfs(linkgraph g, int i)
+{
+	edgenode *p;
+	printf("%c", g.adjlist[i].vertex);
+	visit[i] = 1;
+	p = g.adjlist[i].firstedge;
+	while (p)
+	{
+		if (!visit[p->adjvex])
+			dfs(g, p->adjvex);
+		p = p->next;
+	}
+}
+void dfslinkgraph(linkgraph g)
+{
+	int i;
+	for (i = 0; i < g.n; i++)
+		visit[i] = 0;
+	for (i = 0; i < g.n; i++)
+	{
+		if (!visit[i])
+			dfs(g, i);
+	}
+}
+
+void bfs(linkgraph g, int i)
+{
+	int j;
+	edgenode *p;
+	q.push(i);
+	printf("%c", g.adjlist[i].vertex);
+	visit[i] = 1;
+	while(!q.empty())
+	{
+		int x = q.front();
+		q.pop();
+		p = g.adjlist[x].firstedge;
+		while (p)
+		{
+			if (visit[p->adjvex] == 0)
+			{
+				visit[p->adjvex] = 1;
+				printf("%c", g.adjlist[p->adjvex].vertex);
+				q.push(p->adjvex);
+			}
+			p = p->next;
+		}
+	}
+}
+void bfsgraph(linkgraph g)
+{
+	int i, count = 0;
+	for (i = 0; i < g.n; i++)
+	{
+		visit[i] = 0;
+	}
+	for (i = 0; i < g.n; i++)
+	{
+		if (!visit[i])
+		{
+			bfs(g, i);
+		}
+	}
+
+}
+
+
+
